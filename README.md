@@ -13,4 +13,4 @@
 |          | MitoEM-H | Human      | Adult |temporal lobe| II | MSEM       |(512,512,500)x64    |   8x8x30        | 13537      |
 | [FastMito'20](https://sites.google.com/view/connectomics/)|Lucchi++|Mouse|?|Hippocampus|?|?|(512, 768, 82)|10x10x10| 70      |
 |          | Kasthuri++| Mouse     |       |Somatosensory| IV/V | SEM      |(699,791,80)x2      |12x12x30         | 267        |
-| [UroCell'20](https://github.com/MancaZerovnikMekuc/UroCell)||Mouse|6-8w|urinary bladder||FIB-SEM|(256,256,256)x8|16x16x15|     |
+| [UroCell'20](https://github.com/MancaZerovnikMekuc/UroCell)||Mouse|6-8w|urinary bladder||FIB-SEM|(256,256,256)x5|16x16x15|     |
