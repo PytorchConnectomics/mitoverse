@@ -1,5 +1,7 @@
 # mitoverse
 
+## Curated Datasets
+For some datasets, we converted the binary segmentation into instance segmentation.
 
 |Microscope| Dataset  |    Specie   | Age   | Tissue | Avg Shape (xyz)   | Resolution   | # Mitos   |
 |----------|----------|-------------|-------|--------|-------------------|--------------|-----------|
