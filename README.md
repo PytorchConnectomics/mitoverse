@@ -1,6 +1,6 @@
-# mitoverse
+# mitoverse3D
 
-## Curated Datasets
+## 3D EM Datasets with Mitochondria Annotation
 For some datasets, we converted the binary segmentation into instance segmentation.
 
 |Microscope| Dataset  |    Specie   | Age   | Tissue | Avg Shape (xyz)   | Resolution   | # Mitos   |
@@ -16,9 +16,6 @@ For some datasets, we converted the binary segmentation into instance segmentati
 |ssSEM     |[Xiao'18](https://www.frontiersin.org/journals/neuroanatomy/articles/10.3389/fnana.2018.00092/full)|Mouse||cortex|(2156,2104,31)|8x8x50|   468  |
 |SBF-SEM   |[Guay'21](https://leapmanlab.github.io/dense-cell/)|Human||Platelet|(667,736,65)x3|10x10x50|    |
 |SBF-SEM   |[Haberl'18](https://github.com/CRBS/cdeep3m/)|Mouse|||(256,256,15)x2|10x10x24|    |
-|SBF-SEM   |[Perez'14](https://www.sci.utah.edu/releases/chm_v2.1.367/chm-supplemental_data.zip)|Mouse||Hypothalamus (SCN)|(750,750,45)x2|8x8x30|    |
-
-
 
 
 ## Acknowledgement
