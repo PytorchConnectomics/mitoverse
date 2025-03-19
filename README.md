@@ -14,6 +14,7 @@ For some datasets, we converted the binary segmentation into instance segmentati
 |          |          |  Human      | Adult |Temporal lobe (layer II) | (512,512,500)x64    | 8x8x30       | 13537     |
 |ssSEM     |[Casser'20 (Kasthuri++)](https://sites.google.com/view/connectomics/) | Mouse     |       |Somatosensory (layer IV/V) | (699,791,80)x2      |12x12x30      | 267       |
 |ssSEM     |[Xiao'18](https://www.frontiersin.org/journals/neuroanatomy/articles/10.3389/fnana.2018.00092/full)|Mouse||cortex|(2156,2104,31)|8x8x50|   468  |
+|SBF-SEM   |[Jiang'25](https://www.sciencedirect.com/science/article/pii/S2667237525000256)|Mouse|Adult|Brainstem|(1000,1000,100)x3|15x15x40| 2057   |
 |SBF-SEM   |[Guay'21](https://leapmanlab.github.io/dense-cell/)|Human||Platelet|(667,736,65)x3|10x10x50|    |
 |SBF-SEM   |[Haberl'18](https://github.com/CRBS/cdeep3m/)|Mouse|||(256,256,15)x2|10x10x24|    |
 
