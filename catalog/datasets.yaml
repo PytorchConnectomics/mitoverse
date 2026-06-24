@@ -1,0 +1,219 @@
+# MitoVerse dataset catalog — one entry per SOURCE dataset.
+# Per-VOLUME rows (with split assignment) live in catalog/volumes.csv, appended by scripts/ingest.py.
+# dataset_id matches the MitoLE/ directory name where one exists, so reuse is 1:1.
+# voxel_nm is [x, y, z]. Fields marked TBD need confirmation before that dataset is benchmarked.
+schema_version: 0.1
+source_store: /projects/weilab/dataset/mito        # where the raw/MitoLE inputs live
+datasets:
+
+  # Folder = annotation source (Casser'20 produced both the Kasthuri++ AND Lucchi++ corrections),
+  # so both live under casser20/. Per-volume modality/voxel differ — recorded in each .zattrs.
+  casser20:
+    name: "Casser'20 ++ corrections (Kasthuri++, Lucchi++)"
+    citation: "Casser'20"
+    label_type: instance
+    provenance: converted_binary_to_instance
+    license: "verify (EPFL CVlab for Lucchi++)"
+    volumes:
+      "kasthuri++_train": {modality: ssSEM,  species: Mouse, tissue: "somatosensory cortex (L4/5)", voxel_nm: [12, 12, 30]}
+      "kasthuri++_test":  {modality: ssSEM,  species: Mouse, tissue: "somatosensory cortex (L4/5)", voxel_nm: [12, 12, 30]}
+      "lucchi++":         {modality: FIB-SEM, species: Mouse, tissue: hippocampus,                   voxel_nm: [10, 10, 10]}
+    me2: null
+
+  xiao18:
+    name: "Xiao auditory cortex"
+    citation: "Xiao'18"
+    modality: ssSEM
+    species: Mouse
+    tissue: "auditory cortex"
+    voxel_nm: [8, 8, 50]
+    label_type: instance
+    provenance: native_instance
+    license: "verify"
+    source: {repo: MitoLE, glob: "xiao18/vol0_{im,mito}.h5"}
+    me2: null
+
+  wei20:
+    name: "MitoEM (H + R)"
+    citation: "Wei'20"
+    modality: ssSEM
+    species: [Rat, Human]
+    tissue: "cortex (V1 L2/3 rat; temporal lobe L2 human)"
+    voxel_nm: [8, 8, 30]
+    label_type: instance
+    provenance: native_instance
+    license: "MitoEM challenge terms"
+    source: {repo: MitoLE, glob: "wei20/mitoEM-*_den_*.h5"}
+    me2: Dataset006_ME2-Pyra
+
+  microns1:
+    name: "MICrONS cortex"
+    citation: "MICrONS'21"
+    modality: ssTEM
+    species: Mouse
+    tissue: "V1 (L2/3), P36"
+    voxel_nm: [8, 8, 40]
+    label_type: instance
+    provenance: proofread
+    license: "CC BY 4.0 — attribution; redistribution caveat (†)"
+    source: {repo: MitoLE, glob: "existing/microns/*.h5"}
+    me2: null
+
+  jiang25:
+    name: "Jiang brainstem"
+    citation: "Jiang'25"
+    modality: SBF-SEM
+    species: Mouse
+    tissue: brainstem
+    voxel_nm: [15, 15, 40]
+    label_type: instance
+    provenance: native_instance
+    license: "verify"
+    source: {repo: MitoLE, glob: "jiang25/vol{0,1,2}_{im,mito}.h5"}
+    me2: Dataset008_ME2-Stem
+
+  guay21:
+    name: "Guay dense-cell platelet"
+    citation: "Guay'21"
+    modality: SBF-SEM
+    species: Human
+    tissue: platelet
+    voxel_nm: [10, 10, 50]
+    label_type: instance
+    provenance: converted_binary_to_instance
+    license: "verify (leapmanlab)"
+    source: {repo: MitoLE, glob: "guay21/vol{0,1,2}_{im,mito}.h5"}
+    me2: null
+
+  haberl18:
+    name: "CDeep3M (Haberl)"
+    citation: "Haberl'18"
+    modality: SBF-SEM
+    species: Mouse
+    tissue: TBD
+    voxel_nm: [10, 10, 24]
+    label_type: instance
+    provenance: converted_binary_to_instance
+    license: "verify"
+    source: {repo: MitoLE, glob: "haberl18/*.h5"}
+    me2: null
+
+  mekuc20:                          # was urocell/
+    name: "UroCell urinary bladder"
+    citation: "Mekuč'20"
+    modality: FIB-SEM
+    species: Mouse
+    tissue: "urinary bladder (urothelium)"
+    voxel_nm: [16, 16, 15]
+    label_type: instance
+    provenance: native_instance
+    license: "GitHub repo license — verify"
+    source: {repo: MitoLE, glob: "urocell/fib1-*_{im,mito}.h5"}
+    me2: null
+
+  muller20:
+    name: "BetaSeg pancreatic islet"
+    citation: "Müller'20"
+    modality: FIB-SEM
+    species: Mouse
+    tissue: "pancreas (beta cells)"
+    voxel_nm: [16, 16, 16]
+    label_type: instance
+    provenance: converted_binary_to_instance
+    license: "betaseg.github.io — verify"
+    # NOT yet in MitoLE. Raw multi-organelle TIFFs live in mito/xie23 (high_c*/low_c*).
+    source: {repo: raw, glob: "xie23/{high,low}_c*/"}
+    me2: Dataset001_ME2-Beta
+
+  mitonet:
+    name: "MitoNet / empanada CEM"
+    citation: "Conrad'23"
+    modality: FIB-SEM
+    species: mixed
+    tissue: mixed
+    voxel_nm: [15, 15, 15]
+    label_type: instance
+    provenance: proofread
+    license: "CEM/empanada terms — verify"
+    source: {repo: MitoLE, glob: "mitoNet_{easy,hard}/*.h5"}
+    me2: null
+
+  # OpenOrganelle/COSEM volumes (jrc_*), imaging published by Xu'21. Folder is by imaging volume;
+  # annotation provenance is captured by split membership: CellMap-annotated crops -> splits/cellmap.json,
+  # lab self-annotated *_test0/_test1 -> splits/mitoem2.0.json. (was cellmap25/, before that cellmap24_*.)
+  openorganelle:
+    name: "OpenOrganelle / COSEM volumes"
+    citation: "Xu'21"
+    modality: FIB-SEM
+    species: mixed
+    tissue: "various cells/tissues (cos7, jurkat, hela, macrophage, mus-kidney/liver, fly, sum159, ...)"
+    voxel_nm: [8, 8, 8]
+    label_type: instance
+    provenance: mixed   # cellmap (crops) or self (test0/test1)
+    license: "OpenOrganelle / Janelia — verify per volume"
+    source: {repo: ["cellmap_mito (adhinart)", "MitoLE/cellmap24_* (lab test crops)"]}
+
+  kunduri22:
+    name: "Drosophila spermatocyte (ME2-Sperm)"
+    citation: "Kunduri'22"
+    modality: FIB-SEM
+    species: Drosophila
+    tissue: "gonad (spermatocyte)"
+    voxel_nm: [16, 16, 16]
+    label_type: instance
+    provenance: self_labeled   # gt not connected across train01/train02 yet
+    license: "verify"
+    source: {repo: "MitoEM2.0_OMEZarr/Dataset007_ME2-Sperm (zarr v3)"}
+    me2: Dataset007_ME2-Sperm
+
+  kedar:
+    name: "Kedar sperm / muscle"
+    citation: "Kedar (unpublished)"
+    modality: FIB-SEM
+    species: TBD
+    tissue: TBD              # f536 -> ME2-Sperm; 4yv2h -> TBD
+    voxel_nm: TBD
+    label_type: instance
+    provenance: proofread
+    license: "internal — do not redistribute without owner OK"
+    source: {repo: MitoLE, glob: "Kedar_{f536,4yv2h}/*.h5"}
+    me2: Dataset007_ME2-Sperm
+
+  zhu22:
+    name: "Zhu (jrc_sc)"
+    citation: "Zhu'22"
+    modality: TBD
+    species: TBD
+    tissue: "TBD (jrc_sc — spinal cord?)"
+    voxel_nm: TBD
+    label_type: TBD
+    provenance: TBD
+    license: "verify"
+    source: {repo: MitoLE, glob: "zhu22/jrc_sc_chunk*.h5"}
+    me2: null
+
+  wilson19:
+    name: "Wilson (pc2/pc9)"
+    citation: "Wilson'19"
+    modality: TBD
+    species: TBD
+    tissue: TBD
+    voxel_nm: TBD
+    label_type: instance
+    provenance: TBD
+    license: "verify"
+    source: {repo: MitoLE, glob: "wilson19/pc*_{im,mask,mito}.h5"}
+    me2: null
+
+  han24:
+    name: "Han mossy fiber"
+    citation: "Han'24"
+    modality: ssSEM
+    species: TBD
+    tissue: "cerebellum (mossy fiber)"
+    voxel_nm: [8, 8, 30]
+    label_type: instance
+    provenance: proofread
+    license: "internal — verify"
+    source: {repo: MitoLE, glob: "han24/{neg,pos}*_{im,mask,mito}.h5"}
+    me2: Dataset004_ME2-Mossy   # ME2 omits local neg2
