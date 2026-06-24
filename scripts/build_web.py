@@ -21,7 +21,7 @@ for vid, m in cat.items():
     vols.append({
         "id": vid, "dataset": m.get("dataset_id", ""),
         "modality": m.get("modality") or "—", "species": m.get("species") or "—",
-        "tissue": m.get("tissue") or "—",
+        "organ": m.get("organ") or "—", "tissue": m.get("tissue") or "—",
         "res": ("×".join(str(int(x)) for x in vx)) if vx != [0, 0, 0] else "TBD",
         "iso": iso, "shape": [int(sh[2]), int(sh[1]), int(sh[0])],
         "n": int(m.get("n_instances", 0)), "prov": m.get("provenance") or "—",
@@ -88,9 +88,9 @@ document.getElementById('stats').innerHTML = [
   ['Organisms',uniq(DATA,v=>v.species)],
 ].map(([k,v])=>`<div class="card"><div class="num">${fmt(v)}</div><div class="lbl">${k}</div></div>`).join('');
 
-const TABS=[['all','All volumes'],['modality','By modality'],['species','By organism'],
+const TABS=[['all','All volumes'],['modality','By modality'],['species','By organism'],['organ','By organ'],
   ['res','By resolution'],['tissue','By tissue'],['dataset','By dataset'],['prov','By provenance']];
-const AX={modality:v=>v.modality,species:v=>v.species,res:v=>v.res,tissue:v=>v.tissue,dataset:v=>v.dataset,prov:v=>v.prov};
+const AX={modality:v=>v.modality,species:v=>v.species,organ:v=>v.organ,res:v=>v.res,tissue:v=>v.tissue,dataset:v=>v.dataset,prov:v=>v.prov};
 const tabbar=document.getElementById('tabs');
 TABS.forEach(([k,l],i)=>{const b=document.createElement('button');b.textContent=l;
   if(i===0)b.classList.add('active');b.onclick=()=>{[...tabbar.children].forEach(c=>c.classList.remove('active'));b.classList.add('active');render(k);};
@@ -98,15 +98,15 @@ TABS.forEach(([k,l],i)=>{const b=document.createElement('button');b.textContent=
 
 const shp = v => `${v.shape[0]}×${v.shape[1]}×${v.shape[2]}`;
 function volRows(vs){return vs.map(v=>`<tr class="sub"><td>${v.id}</td><td>${v.dataset}</td><td>${badge(v.modality)}</td>
-  <td>${v.species}</td><td>${v.tissue}</td><td>${v.res}${v.iso?' <span class=pill>iso</span>':''}</td><td>${shp(v)}</td><td class="num">${fmt(v.n)}</td></tr>`).join('');}
+  <td>${v.species}</td><td>${v.organ}</td><td>${v.tissue}</td><td>${v.res}${v.iso?' <span class=pill>iso</span>':''}</td><td>${shp(v)}</td><td class="num">${fmt(v.n)}</td></tr>`).join('');}
 
 function flatTable(vs){
   return `<input type="search" id="q" placeholder="filter ${vs.length} volumes (id, dataset, organism, tissue…)">
   <div style="overflow:auto;max-height:70vh"><table id="tbl"><thead><tr>
   <th data-k="id">Volume</th><th data-k="dataset">Dataset</th><th data-k="modality">Modality</th>
-  <th data-k="species">Organism</th><th data-k="tissue">Tissue / region</th><th data-k="res">Resolution (nm)</th>
+  <th data-k="species">Organism</th><th data-k="organ">Organ</th><th data-k="tissue">Tissue / region</th><th data-k="res">Resolution (nm)</th>
   <th data-k="shape">Shape (x,y,z)</th><th class="num" data-k="n"># Mito</th></tr></thead>
-  <tbody>${vs.map(v=>`<tr><td>${v.id}</td><td>${v.dataset}</td><td>${badge(v.modality)}</td><td>${v.species}</td>
+  <tbody>${vs.map(v=>`<tr><td>${v.id}</td><td>${v.dataset}</td><td>${badge(v.modality)}</td><td>${v.species}</td><td>${v.organ}</td>
   <td>${v.tissue}</td><td>${v.res}${v.iso?' <span class=pill>iso</span>':''}</td><td>${shp(v)}</td><td class="num">${fmt(v.n)}</td></tr>`).join('')}</tbody></table></div>`;
 }
 function groupTable(rows,maxMito){

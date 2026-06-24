@@ -12,7 +12,7 @@ datasets:
     name: "Casser'20 ++ corrections (Kasthuri++, Lucchi++)"
     citation: "Casser'20"
     label_type: instance
-    provenance: converted_binary_to_instance
+    provenance: binary_conversion_proofread
     license: "verify (EPFL CVlab for Lucchi++)"
     volumes:
       "kasthuri++_train": {modality: ssSEM,  species: Mouse, tissue: "somatosensory cortex (L4/5)", voxel_nm: [12, 12, 30]}
@@ -28,7 +28,7 @@ datasets:
     tissue: "auditory cortex"
     voxel_nm: [8, 8, 50]
     label_type: instance
-    provenance: native_instance
+    provenance: instance_proofread
     license: "verify"
     source: {repo: MitoLE, glob: "xiao18/vol0_{im,mito}.h5"}
     me2: null
@@ -41,7 +41,7 @@ datasets:
     tissue: "cortex (V1 L2/3 rat; temporal lobe L2 human)"
     voxel_nm: [8, 8, 30]
     label_type: instance
-    provenance: native_instance
+    provenance: instance_proofread
     license: "MitoEM challenge terms"
     source: {repo: MitoLE, glob: "wei20/mitoEM-*_den_*.h5"}
     me2: Dataset006_ME2-Pyra
@@ -54,7 +54,7 @@ datasets:
     tissue: "V1 (L2/3), P36"
     voxel_nm: [8, 8, 40]
     label_type: instance
-    provenance: proofread
+    provenance: instance_proofread
     license: "CC BY 4.0 — attribution; redistribution caveat (†)"
     source: {repo: MitoLE, glob: "existing/microns/*.h5"}
     me2: null
@@ -67,7 +67,7 @@ datasets:
     tissue: brainstem
     voxel_nm: [15, 15, 40]
     label_type: instance
-    provenance: native_instance
+    provenance: instance_proofread
     license: "verify"
     source: {repo: MitoLE, glob: "jiang25/vol{0,1,2}_{im,mito}.h5"}
     me2: Dataset008_ME2-Stem
@@ -80,20 +80,21 @@ datasets:
     tissue: platelet
     voxel_nm: [10, 10, 50]
     label_type: instance
-    provenance: converted_binary_to_instance
+    provenance: binary_conversion_proofread
     license: "verify (leapmanlab)"
     source: {repo: MitoLE, glob: "guay21/vol{0,1,2}_{im,mito}.h5"}
     me2: null
 
   haberl18:
-    name: "CDeep3M (Haberl)"
+    name: "CDeep3M (Haberl & Ellisman 2018, Nat Methods)"
     citation: "Haberl'18"
-    modality: SBF-SEM
-    species: Mouse
-    tissue: TBD
+    doi: "10.1038/s41592-018-0106-z"
+    modality: SBF-SEM   # SBEM
+    species: Mouse      # C57BL/6NHsd
+    tissue: "brain (cerebellum / lateral habenula)"
     voxel_nm: [10, 10, 24]
     label_type: instance
-    provenance: converted_binary_to_instance
+    provenance: binary_conversion_proofread
     license: "verify"
     source: {repo: MitoLE, glob: "haberl18/*.h5"}
     me2: null
@@ -106,35 +107,37 @@ datasets:
     tissue: "urinary bladder (urothelium)"
     voxel_nm: [16, 16, 15]
     label_type: instance
-    provenance: native_instance
+    provenance: instance_proofread
     license: "GitHub repo license — verify"
     source: {repo: MitoLE, glob: "urocell/fib1-*_{im,mito}.h5"}
     me2: null
 
-  muller20:
+  muller21:
     name: "BetaSeg pancreatic islet"
-    citation: "Müller'20"
+    citation: "Müller'21"
     modality: FIB-SEM
     species: Mouse
     tissue: "pancreas (beta cells)"
     voxel_nm: [16, 16, 16]
     label_type: instance
-    provenance: converted_binary_to_instance
+    provenance: binary_conversion_proofread
     license: "betaseg.github.io — verify"
     # NOT yet in MitoLE. Raw multi-organelle TIFFs live in mito/xie23 (high_c*/low_c*).
     source: {repo: raw, glob: "xie23/{high,low}_c*/"}
     me2: Dataset001_ME2-Beta
 
-  mitonet:
-    name: "MitoNet / empanada CEM"
+  conrad23:                         # MitoNet 3D benchmark (mitoNet_easy/hard -> conrad23)
+    name: "MitoNet benchmark (Conrad & Narayan 2023, Cell Systems)"
     citation: "Conrad'23"
-    modality: FIB-SEM
-    species: mixed
-    tissue: mixed
-    voxel_nm: [15, 15, 15]
+    doi: "10.1016/j.cels.2022.12.006"
+    empiar: "EMPIAR-10982"
+    modality: FIB-SEM   # all isotropic FIB-SEM
+    species: mixed      # fly_brain=Drosophila, c_elegans, hela=Human, glycolytic_muscle/salivary=Mouse
+    tissue: "brain / whole-worm / HeLa / glycolytic muscle / salivary gland"
+    voxel_nm: per-volume   # fly 12, hela/salivary 15, muscle 18, c_elegans 24 (isotropic)
     label_type: instance
-    provenance: proofread
-    license: "CEM/empanada terms — verify"
+    provenance: instance_proofread
+    license: "EMPIAR-10982 / empanada — verify"
     source: {repo: MitoLE, glob: "mitoNet_{easy,hard}/*.h5"}
     me2: null
 
@@ -161,7 +164,7 @@ datasets:
     tissue: "gonad (spermatocyte)"
     voxel_nm: [16, 16, 16]
     label_type: instance
-    provenance: self_labeled   # gt not connected across train01/train02 yet
+    provenance: liu26   # gt not connected across train01/train02 yet
     license: "verify"
     source: {repo: "MitoEM2.0_OMEZarr/Dataset007_ME2-Sperm (zarr v3)"}
     me2: Dataset007_ME2-Sperm
@@ -174,7 +177,7 @@ datasets:
     tissue: TBD              # f536 -> ME2-Sperm; 4yv2h -> TBD
     voxel_nm: TBD
     label_type: instance
-    provenance: proofread
+    provenance: instance_proofread
     license: "internal — do not redistribute without owner OK"
     source: {repo: MitoLE, glob: "Kedar_{f536,4yv2h}/*.h5"}
     me2: Dataset007_ME2-Sperm
@@ -209,11 +212,11 @@ datasets:
     name: "Han mossy fiber"
     citation: "Han'24"
     modality: ssSEM
-    species: TBD
+    species: Mouse
     tissue: "cerebellum (mossy fiber)"
     voxel_nm: [8, 8, 30]
     label_type: instance
-    provenance: proofread
+    provenance: instance_proofread
     license: "internal — verify"
     source: {repo: MitoLE, glob: "han24/{neg,pos}*_{im,mask,mito}.h5"}
     me2: Dataset004_ME2-Mossy   # ME2 omits local neg2
