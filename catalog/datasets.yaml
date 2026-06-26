@@ -219,4 +219,32 @@ datasets:
     provenance: original
     license: "internal — verify"
     source: {repo: MitoLE, glob: "han24/{neg,pos}*_{im,mask,mito}.h5"}
-    me2: Dataset004_ME2-Mossy   # ME2 omits local neg2
+    me2: Dataset004_ME2-Mossy   # ME2 omits neg2; MitoVerse includes it (6 vols)
+
+  parlakgul24:
+    name: "MBLiver — hepatic FIB-SEM (Parlakgul'24)"
+    citation: "Parlakgul'24 (Nat Commun)"
+    modality: FIB-SEM
+    species: Mouse
+    tissue: "liver (hepatocyte)"
+    voxel_nm: [16, 16, 16]                  # downsampled from 8 nm isotropic
+    label_type: instance
+    provenance: original
+    license: "verify (EMPIAR-12017, public)"
+    source: {empiar: "EMPIAR-12017 (+raw EMPIAR-10791 for lean_fed/obese_fed)",
+             glob: "6 imagesets: lean/obese x fasted/fed, LacZ control, RRBP1"}
+    note: "8->16 nm downsample; instance mito uint16 via fastremap; scripts/ingest_empiar12017.py"
+
+  asem:
+    name: "ASEM whole-cell organelles"
+    citation: "Gallusser'22 (JCB)"
+    modality: FIB-SEM
+    species: "various (cultured cells)"
+    tissue: "cultured cell"
+    voxel_nm: "4-20 per-volume"             # native 4/5 nm; downsampled to ~16 nm, floor long>=200
+    label_type: instance
+    provenance: original                    # ASEM semantic mask -> cc3d-26 instances
+    license: "verify (ASEM project)"
+    source: {bucket: "s3://asem-project",
+             glob: "datasets/{2E,3A,46,58,61,64}/*.zarr/volumes/{raw,labels/mito}"}
+    note: "semantic mito -> cc3d-26 instances; doi:10.1083/jcb.202208005; scripts/ingest_asem.py"
