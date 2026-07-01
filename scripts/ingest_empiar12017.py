@@ -79,9 +79,13 @@ def list_tifs(dir_url):
     return sorted(set(names), key=zkey)
 
 
-def mito_members(zip_url):
+def mito_members(zip_url, timeout=180):
+    # RemoteZip forwards **kwargs to requests.get(..., stream=True); a timeout turns an EBI
+    # mid-stream stall (which otherwise blocks the read forever) into a raised ReadTimeout the
+    # caller can retry. A fresh Session lets a reconnect drop the poisoned connection.
+    import requests
     from remotezip import RemoteZip
-    zf = RemoteZip(enc(zip_url))
+    zf = RemoteZip(enc(zip_url), session=requests.Session(), timeout=timeout)
     names = [n for n in zf.namelist() if n.lower().endswith((".tif", ".tiff"))]
     def nkey(n):
         base = os.path.splitext(os.path.basename(n))[0]
@@ -178,14 +182,35 @@ def ingest_vol(vol, cfg, max_chunks=None, log=print):
         for k in range(8):
             try:
                 r = _sess().get(url, timeout=180); r.raise_for_status()
-                return tifffile.imread(io.BytesIO(r.content))
+                a = tifffile.imread(io.BytesIO(r.content))
+                # EBI sometimes serves a 200 with a truncated/corrupt body: tifffile warns
+                # "invalid offset to first page" and returns a degenerate (non-2D) array.
+                # raise_for_status() doesn't catch this, so validate and force a re-fetch.
+                if a.ndim != 2 or a.shape[0] < 2 or a.shape[1] < 2:
+                    raise ValueError(f"corrupt raw slice {raw_names[idx]} shape={a.shape}")
+                return a
             except Exception as e:
                 if k == 7: raise
                 _tl.s = None  # drop poisoned session/connection
-                time.sleep(min(60, 5 * (k + 1)))  # backoff for Errno111 conn-refused
+                time.sleep(min(60, 5 * (k + 1)))  # backoff for Errno111 / corrupt page
+    _mz = {"zf": zf}
     def get_mito(idx):
-        with zf.open(mito_names[idx]) as fp:
-            return tifffile.imread(io.BytesIO(fp.read()))
+        # Mirror get_raw's resilience. get_mito runs synchronously in the main loop, so a
+        # stalled RemoteZip read here freezes the entire ingest (observed: EBI throttle hung
+        # the job at chunk 34 for 6.5h, no error, holding the allocation). Retry + reconnect.
+        for k in range(8):
+            try:
+                with _mz["zf"].open(mito_names[idx]) as fp:
+                    a = tifffile.imread(io.BytesIO(fp.read()))
+                if a.ndim != 2 or a.shape[0] < 2 or a.shape[1] < 2:
+                    raise ValueError(f"corrupt mito slice {mito_names[idx]} shape={a.shape}")
+                return a
+            except Exception:
+                if k == 7: raise
+                try: _mz["zf"].close()
+                except Exception: pass
+                time.sleep(min(60, 5 * (k + 1)))  # back off, then reconnect the remote zip
+                _mz["zf"], _ = mito_members(cfg["mito_zip"])
 
     r0 = get_raw(0)
     Y2, X2 = r0.shape[0] // 2, r0.shape[1] // 2
@@ -232,10 +257,16 @@ def ingest_vol(vol, cfg, max_chunks=None, log=print):
         for j, z2 in enumerate(range(z2a, z2b)):
             ia, ib = 2 * z2, 2 * z2 + 1
             ra, rb = take(ia), take(ib)
-            img_buf[j] = ds_img(ra, rb)
+            # img and label volumes can differ by a few px in their native Y/X, so the
+            # independently-downsampled slices may not match the buffer's (Y2,X2) exactly.
+            # Fit each into the common top-left overlap (zero-fill any shortfall).
+            di = ds_img(ra, rb)
+            iy, ix = min(di.shape[0], Y2), min(di.shape[1], X2)
+            img_buf[j] = 0; img_buf[j, :iy, :ix] = di[:iy, :ix]
             m = ds_lbl(get_mito(ia))
-            mito_buf[j] = m
-            u = np.unique(m); seen.update(u[u > 0].tolist())
+            my, mx = min(m.shape[0], Y2), min(m.shape[1], X2)
+            mito_buf[j] = 0; mito_buf[j, :my, :mx] = m[:my, :mx]
+            u = np.unique(m[:my, :mx]); seen.update(u[u > 0].tolist())
             # keep prefetch sliding
             ahead = z2 + PREFETCH // 2
             if ahead < Z2: ensure(2 * ahead); ensure(2 * ahead + 1)
